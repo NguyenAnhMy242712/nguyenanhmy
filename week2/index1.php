@@ -6,7 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>My First PHP Page</h1>
     <p>
         <?php
         $x=5;
