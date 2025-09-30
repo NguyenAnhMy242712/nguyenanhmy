@@ -1,54 +1,105 @@
 <?php
 include "connection.php";
 ?>
-<?php
 
+<html lang="en">
+<head>
+    <title>Computer Management</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="col-lg-4">
+        <h2>Computer Data Form</h2>
+        <form action="" method="post">
+            <div class="form-group">
+                <label for="brand">Brand:</label>
+                <input type="text" class="form-control" id="brand" placeholder="Enter brand" name="brand">
+            </div>
+            <div class="form-group">
+                <label for="model">Model:</label>
+                <input type="text" class="form-control" id="model" placeholder="Enter model" name="model">
+            </div>
+            <div class="form-group">
+                <label for="processor">Processor:</label>
+                <input type="text" class="form-control" id="processor" placeholder="Enter processor" name="processor">
+            </div>
+            <div class="form-group">
+                <label for="ram">RAM:</label>
+                <input type="text" class="form-control" id="ram" placeholder="Enter RAM" name="ram">
+            </div>
+            <div class="form-group">
+                <label for="storage">Storage:</label>
+                <input type="text" class="form-control" id="storage" placeholder="Enter storage" name="storage">
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="text" class="form-control" id="price" placeholder="Enter price" name="price">
+            </div>
+            <button type="submit" name="insert" class="btn btn-primary">Insert</button>
+            <button type="submit" name="update" class="btn btn-warning">Update</button>
+            <button type="submit" name="delete" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+</div>
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "LaptopShop";   
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
-
-$sql = "SELECT LaptopID, Brand, Model, Processor, RAM, Storage, Price, Quantity, ReleaseYear FROM Laptops";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    echo "<h2>Danh sách Laptop</h2>";
-    echo "<table border='1' cellpadding='8'>";
-    echo "<tr>
-            <th>ID</th>
+<div class="col-lg-12">
+    <h2>Computers List</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>#</th>
             <th>Brand</th>
             <th>Model</th>
             <th>Processor</th>
-            <th>RAM (GB)</th>
+            <th>RAM</th>
             <th>Storage</th>
-            <th>Price ($)</th>
-            <th>Quantity</th>
-            <th>Release Year</th>
-          </tr>";
-    while($row = $result->fetch_assoc()) {
-        echo "<tr>
-                <td>".$row["LaptopID"]."</td>
-                <td>".$row["Brand"]."</td>
-                <td>".$row["Model"]."</td>
-                <td>".$row["Processor"]."</td>
-                <td>".$row["RAM"]."</td>
-                <td>".$row["Storage"]."</td>
-                <td>".$row["Price"]."</td>
-                <td>".$row["Quantity"]."</td>
-                <td>".$row["ReleaseYear"]."</td>
-              </tr>";
-    }
-    echo "</table>";
-} else {
-    echo "Chưa có dữ liệu laptop.";
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        if (!empty($link)) {
+            $res = mysqli_query($link, "SELECT * FROM computers");
+            while ($row = mysqli_fetch_array($res)) {
+                echo "<tr>";
+                echo "<td>" . $row["id"] . "</td>";
+                echo "<td>" . $row["brand"] . "</td>";
+                echo "<td>" . $row["model"] . "</td>";
+                echo "<td>" . $row["processor"] . "</td>";
+                echo "<td>" . $row["ram"] . "</td>";
+                echo "<td>" . $row["storage"] . "</td>";
+                echo "<td>" . $row["price"] . "</td>";
+                echo "</tr>";
+            }
+        }
+        ?>
+        </tbody>
+    </table>
+</div>
+</body>
+
+<?php
+// Insert
+if (isset($_POST["insert"])) {
+    mysqli_query($link, "INSERT INTO computers VALUES (NULL,'$_POST[brand]','$_POST[model]','$_POST[processor]','$_POST[ram]','$_POST[storage]','$_POST[price]')");
+    echo "<script>window.location.href=window.location.href;</script>";
 }
 
-$conn->close();
+// Delete theo brand
+if (isset($_POST["delete"])) {
+    mysqli_query($link, "DELETE FROM computers WHERE brand='$_POST[brand]'");
+    echo "<script>window.location.href=window.location.href;</script>";
+}
+
+// Update model, processor, ram, storage, price theo brand
+if (isset($_POST["update"])) {
+    mysqli_query($link, "UPDATE computers SET model='$_POST[model]', processor='$_POST[processor]', ram='$_POST[ram]', storage='$_POST[storage]', price='$_POST[price]' WHERE brand='$_POST[brand]'");
+    echo "<script>window.location.href=window.location.href;</script>";
+}
 ?>
+</html>
